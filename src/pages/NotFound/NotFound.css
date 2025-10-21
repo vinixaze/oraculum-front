@@ -1,0 +1,25 @@
+.notfound-page {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--oraculum-dark);
+}
+
+.notfound-content {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.notfound-title {
+  margin-bottom: 1rem;
+  font-size: 6rem;
+  font-weight: bold;
+  color: var(--oraculum-yellow);
+}
+
+.notfound-text {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: var(--foreground);
+}

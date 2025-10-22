@@ -9,25 +9,34 @@ import './Home.css';
 
 function Home() {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
 
-  const handleSubmit = (e) => {
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    if (!email) {
+    if (!email.trim()) {
       toast.error('Por favor, digite seu e-mail corporativo');
       return;
     }
     
-    if (!emailRegex.test(email)) {
+    if (!validateEmail(email)) {
       toast.error('Por favor, digite um e-mail válido');
       return;
     }
 
-    navigate('/quiz', { state: { email } });
+    setIsSubmitting(true);
+    
+    // Simula uma pequena validação/processamento
+    setTimeout(() => {
+      setIsSubmitting(false);
+      navigate('/quiz', { state: { email } });
+    }, 300);
   };
 
   return (
@@ -54,8 +63,13 @@ function Home() {
                 icon={<MailIcon />}
               />
               
-              <Button type="submit" variant="yellow" size="lg">
-                Começar agora
+              <Button 
+                type="submit" 
+                variant="yellow" 
+                size="lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Carregando...' : 'Começar agora'}
               </Button>
             </form>
           </div>

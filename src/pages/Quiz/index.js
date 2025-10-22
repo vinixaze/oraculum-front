@@ -15,13 +15,16 @@ function Quiz() {
     }
   }, [email, navigate]);
 
-  const handleStartQuiz = () => {
-    console.log('Iniciar quiz para:', email);
+  const startQuiz = () => {
+    // TODO: Navegar para página do quiz
+    console.log('Quiz iniciado para:', email);
   };
 
-  const handleViewSummary = () => {
-    console.log('Ver resumo para:', email);
+  const viewSummary = () => {
+    navigate('/summary', { state: { email } });
   };
+
+  if (!email) return null;
 
   return (
     <div className="quiz-page">
@@ -55,7 +58,7 @@ function Quiz() {
               <Button 
                 variant="yellow" 
                 size="lg"
-                onClick={handleStartQuiz}
+                onClick={startQuiz}
                 className="quiz-card-button"
               >
                 INICIAR QUIZ
@@ -69,7 +72,7 @@ function Quiz() {
               <Button 
                 variant="yellow" 
                 size="lg"
-                onClick={handleViewSummary}
+                onClick={viewSummary}
                 className="quiz-card-button"
               >
                 ENTRAR

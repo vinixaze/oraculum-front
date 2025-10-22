@@ -16,6 +16,12 @@
   justify-content: space-between;
 }
 
+.header-logo-link {
+  text-decoration: none; 
+  display: flex;
+  align-items: center;
+}
+
 .header-logo {
   display: flex;
   align-items: center;

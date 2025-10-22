@@ -5,7 +5,7 @@
   right: 0;
   z-index: 50;
   background-color: var(--oraculum-yellow);
-  padding: 0.5rem 0.25rem; 
+  padding: 0.3rem 0.25rem; 
 }
 
 .header-container {
@@ -19,13 +19,13 @@
 .header-logo {
   display: flex;
   align-items: center;
-  height: 5.5rem; 
+  height: 4.0rem; 
   margin-left: 0; 
   filter: none; 
 }
 
 .logo-img {
-  height: 5rem; 
+  height: 3.5rem; 
   width: auto;
   object-fit: contain;
 }
@@ -46,7 +46,7 @@
 
 @media (max-width: 768px) {
   .header {
-    padding: 0.5rem 0.25rem;
+    padding: 0.3rem 0.25rem;
   }
 
   .header-link {
@@ -54,11 +54,11 @@
   }
 
   .header-logo {
-    height: 4.5rem;
+    height: 3.0rem;
     filter: none;
   }
   
   .logo-img {
-    height: 4rem;
+    height: 2.5rem;
   }
 }

@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "O que é um firewall?",
+      "options": [
+        "Um dispositivo que protege a rede contra acessos não autorizados",
+        "Um vírus de computador",
+        "Um programa para editar textos",
+        "Um tipo de cabo de rede"
+      ],
+      "correctAnswer": 0,
+      "hint": "Pense em uma barreira de proteção que fica entre sua rede e a internet, decidindo o que pode entrar e o que pode sair."
+    },
+    {
+      "id": 2,
+      "question": "O que significa HTTPS?",
+      "options": [
+        "Protocolo de comunicação seguro na web",
+        "Um tipo de ataque hacker",
+        "Um antivírus avançado",
+        "Um sistema operacional"
+      ],
+      "correctAnswer": 0,
+      "hint": "Repare no 'S' no final da URL do navegador. Esse 'S' significa que a comunicação está protegida e criptografada."
+    },
+    {
+      "id": 3,
+      "question": "Qual dessas é uma boa prática de segurança?",
+      "options": [
+        "Usar a mesma senha em tudo",
+        "Compartilhar senhas por e-mail",
+        "Usar senhas fortes e únicas",
+        "Anotar senhas em papel"
+      ],
+      "correctAnswer": 2,
+      "hint": "A melhor senha é aquela que é difícil de adivinhar, diferente para cada conta, e combina letras, números e símbolos."
+    },
+    {
+      "id": 4,
+      "question": "O que é um malware?",
+      "options": [
+        "Um antivírus gratuito",
+        "Software malicioso criado para causar danos",
+        "Um sistema de backup",
+        "Uma atualização do Windows"
+      ],
+      "correctAnswer": 1,
+      "hint": "É um termo abrangente para vírus, trojans, ransomware e outros programas criados com intenções ruins."
+    },
+    {
+      "id": 5,
+      "question": "O que é autenticação de dois fatores (2FA)?",
+      "options": [
+        "Um método que exige duas formas de verificação",
+        "Um firewall avançado",
+        "Um vírus que se espalha por e-mail",
+        "Um tipo de senha temporária que nunca expira"
+      ],
+      "correctAnswer": 0,
+      "hint": "É como ter duas chaves diferentes para abrir uma porta: a senha que você sabe, mais algo que você possui (como um código no celular)."
+    },
+    {
+      "id": 6,
+      "question": "Qual destes é um exemplo de engenharia social?",
+      "options": [
+        "Atualizar o sistema operacional",
+        "Um golpista fingir ser um técnico de suporte",
+        "Usar VPN para acessar a internet",
+        "Instalar antivírus no computador"
+      ],
+      "correctAnswer": 1,
+      "hint": "Engenharia social é manipular pessoas para obter informações. É quando alguém usa a confiança humana como arma, não tecnologia."
+    },
+    {
+      "id": 7,
+      "question": "Qual dessas práticas é mais segura ao usar Wi-Fi público?",
+      "options": [
+        "Acessar banco sem proteção",
+        "Desligar o antivírus",
+        "Usar VPN para proteger a conexão",
+        "Desativar o HTTPS"
+      ],
+      "correctAnswer": 2,
+      "hint": "Wi-Fi público é como uma conversa em voz alta. Uma VPN cria um túnel privado e criptografado para seus dados."
+    },
+    {
+      "id": 8,
+      "question": "Qual é a principal diferença entre criptografia simétrica e assimétrica?",
+      "options": [
+        "Simétrica é mais lenta que a assimétrica",
+        "Assimétrica usa chaves diferentes para cifrar e decifrar",
+        "Simétrica usa a mesma chave para cifrar e decifrar; assimétrica usa chaves diferentes",
+        "Ambas funcionam da mesma forma"
+      ],
+      "correctAnswer": 2,
+      "hint": "Simétrica é como ter uma única chave que abre e fecha. Assimétrica é como um cadeado: uma chave fecha, outra diferente abre."
+    },
+    {
+      "id": 9,
+      "question": "Em um ataque Man-in-the-Middle, o invasor...",
+      "options": [
+        "Intercepta a comunicação entre duas partes sem que elas percebam",
+        "Rouba apenas senhas salvas no navegador",
+        "Envia vírus diretamente por e-mail",
+        "Bloqueia o acesso à internet"
+      ],
+      "correctAnswer": 0,
+      "hint": "Imagine alguém secretamente lendo todas as cartas entre duas pessoas, podendo até alterá-las antes de entregar."
+    },
+    {
+      "id": 10,
+      "question": "O que é uma vulnerabilidade zero-day?",
+      "options": [
+        "Um antivírus recém-instalado",
+        "Uma atualização de segurança do Windows",
+        "Uma falha desconhecida ainda sem correção",
+        "Um backup automático"
+      ],
+      "correctAnswer": 2,
+      "hint": "É uma falha de segurança descoberta antes dos desenvolvedores saberem dela, ou seja, têm 'zero dias' para corrigir."
+    }
+  ]
+}

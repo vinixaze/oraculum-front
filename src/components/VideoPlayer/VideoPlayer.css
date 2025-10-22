@@ -2,25 +2,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #000; /* Fundo escuro do player */
+  background: #000; 
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   width: 100%;
-  max-width: 700px; /* controla largura máxima */
+  max-width: 700px; 
   margin: 0 auto;
 }
 
 .video-aspect-ratio {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9; /* forma moderna e precisa */
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #0d1829; /* fundo azul escuro antes do load */
+  background: #0d1829; 
   border-radius: 12px;
 }
 
-/* iframe ajustado para preencher */
 .video-aspect-ratio iframe {
   position: absolute;
   top: 0;
@@ -32,7 +31,6 @@
   border-radius: 12px;
 }
 
-/* Tela de carregamento */
 .video-loading {
   position: absolute;
   inset: 0;
@@ -42,7 +40,6 @@
   background: #1a1f26;
 }
 
-/* Spinner */
 .spinner {
   width: 48px;
   height: 48px;
@@ -56,7 +53,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Responsivo */
 @media (max-width: 768px) {
   .video-player {
     max-width: 100%;

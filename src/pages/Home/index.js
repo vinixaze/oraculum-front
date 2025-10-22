@@ -31,8 +31,7 @@ function Home() {
     }
 
     setIsSubmitting(true);
-    
-    // Simula uma pequena validação/processamento
+
     setTimeout(() => {
       setIsSubmitting(false);
       navigate('/quiz', { state: { email } });

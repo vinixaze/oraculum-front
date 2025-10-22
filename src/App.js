@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Quiz from './pages/Quiz';
+import QuizQuestions from './pages/QuizQuestions';
 import Summary from './pages/Summary';
 import NotFound from './pages/NotFound';
 
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quiz" element={<Quiz />} />
+        <Route path="/quiz/questions" element={<QuizQuestions />} />
         <Route path="/summary" element={<Summary />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

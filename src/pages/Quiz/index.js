@@ -16,8 +16,7 @@ function Quiz() {
   }, [email, navigate]);
 
   const startQuiz = () => {
-    // TODO: Navegar para página do quiz
-    console.log('Quiz iniciado para:', email);
+    navigate('/quiz/questions', { state: { email } });
   };
 
   const viewSummary = () => {

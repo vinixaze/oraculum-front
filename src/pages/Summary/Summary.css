@@ -133,15 +133,22 @@
   aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
-  background-color: #1e3c72; /* cor escura de fundo antes do load */
+  background-color: #1e3c72; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Faz o iframe preencher o espaço corretamente */
 .video-wrapper iframe {
   width: 100%;
   height: 100%;
   border: none;
   display: block;
   border-radius: 12px;
+}
+
+.page-background {
+  background-image: url('../../assets/imagem-summary.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
 import VideoPlayer from '../../components/VideoPlayer';
+import FotoSummary from '../../assets/imagem-summary.jpg'
 import './Summary.css';
 
 function Summary() {
@@ -21,7 +22,7 @@ function Summary() {
   };
 
   return (
-    <div className="summary-page">
+    <div className="summary-page page-background">
       <Header />
       
       <main className="summary-container">

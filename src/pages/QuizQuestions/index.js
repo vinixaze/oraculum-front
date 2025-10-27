@@ -37,6 +37,7 @@ function QuizQuestions() {
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [userAnswers, setUserAnswers] = useState([]);
 
   const questions = questionsData.questions;
   const question = questions[currentQuestion];
@@ -45,6 +46,24 @@ function QuizQuestions() {
   useEffect(() => {
     if (!email) {
       navigate('/');
+      return;
+    }
+
+    const completed = localStorage.getItem(`quiz_completed_${email}`);
+    if (completed) {
+      const data = JSON.parse(completed);
+      navigate('/completion', { 
+        state: { email, score: data.score, total: data.total } 
+      });
+      return;
+    }
+
+    const savedProgress = localStorage.getItem(`quiz_progress_${email}`);
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      setCurrentQuestion(progress.currentQuestion);
+      setScore(progress.score);
+      setUserAnswers(progress.userAnswers || []);
     }
   }, [email, navigate]);
 
@@ -55,15 +74,46 @@ function QuizQuestions() {
   const handleNext = () => {
     if (selectedAnswer === null) return;
 
+    let newScore = score;
     if (selectedAnswer === question.correctAnswer) {
-      setScore(score + 1);
+      newScore = score + 1;
+      setScore(newScore);
     }
 
+    const newAnswers = [...userAnswers, selectedAnswer];
+    setUserAnswers(newAnswers);
+
     if (isLastQuestion) {
-      setQuizFinished(true);
+      const completionData = {
+        email,
+        score: newScore,
+        total: questions.length,
+        completedAt: new Date().toISOString(),
+        percentage: Math.round((newScore / questions.length) * 100)
+      };
+      
+      localStorage.setItem(`quiz_completed_${email}`, JSON.stringify(completionData));
+      localStorage.removeItem(`quiz_progress_${email}`);
+
+      navigate('/completion', { 
+        state: { 
+          email, 
+          score: newScore, 
+          total: questions.length 
+        },
+        replace: true
+      });
     } else {
-      setCurrentQuestion(currentQuestion + 1);
+      const nextQuestion = currentQuestion + 1;
+      setCurrentQuestion(nextQuestion);
       setSelectedAnswer(null);
+      
+      const progress = {
+        currentQuestion: nextQuestion,
+        score: newScore,
+        userAnswers: newAnswers
+      };
+      localStorage.setItem(`quiz_progress_${email}`, JSON.stringify(progress));
     }
   };
 

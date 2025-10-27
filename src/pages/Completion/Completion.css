@@ -1,0 +1,70 @@
+.completion-page {
+  min-height: 100vh;
+  background-image: url('../../assets/imagem-completion.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.completion-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(100, 181, 246, 0.85) 0%, rgba(129, 212, 250, 0.75) 100%);
+  z-index: 1;
+}
+
+.completion-main {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10rem 2rem 4rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.completion-content {
+  max-width: 42rem;
+}
+
+.completion-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 2rem;
+  line-height: 1.2;
+}
+
+.completion-subtitle {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #1e3a8a;
+  margin-bottom: 3rem;
+  line-height: 1.5;
+}
+
+.completion-button {
+  font-size: 1.25rem;
+  padding: 1.25rem 3rem;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .completion-main {
+    padding: 6rem 1rem 2rem;
+  }
+
+  .completion-title {
+    font-size: 2rem;
+  }
+  
+  .completion-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .completion-button {
+    width: 100%;
+  }
+}

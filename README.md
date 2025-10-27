@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+Oraculum — Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este repositório contém o frontend do projeto Oraculum, desenvolvido em React, como parte da disciplina de Residência Tecnológica do curso de Análise e Desenvolvimento de Sistemas, em parceria com o Banco do Brasil.
 
-## Available Scripts
+Sobre o Projeto
 
-In the project directory, you can run:
+O Oraculum é uma aplicação web voltada ao aprendizado e conscientização sobre cibersegurança.
+O usuário pode se cadastrar com seu e-mail, assistir a um resumo introdutório com vídeo educativo e realizar um quiz que avalia seu nível de conhecimento.
+Com base no resultado, a aplicação apresenta uma trilha de aprendizado personalizada, composta por módulos, videoaulas e conteúdos complementares.
 
-### `npm start`
+Funcionalidades
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Cadastro de usuário com e-mail
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Exibição de resumo e vídeo introdutório sobre cibersegurança
 
-### `npm test`
+Quiz para avaliação do nível de conhecimento
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Liberação de trilha de aprendizado conforme o resultado do quiz
 
-### `npm run build`
+Interface responsiva e fácil de navegar
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Tecnologias Utilizadas
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+O projeto foi desenvolvido utilizando o Create React App com as seguintes dependências principais:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Tecnologia	Descrição
+React 19	Biblioteca principal para construção da interface
+React DOM	Renderização dos componentes React no navegador
+React Router DOM 7	Gerenciamento de rotas e navegação
+React Scripts 5	Ferramentas de build, testes e execução do Create React App
+Testing Library (React, DOM, Jest, User Event)	Ferramentas para testes de componentes
+Web Vitals	Métricas de performance da aplicação
+Como Executar o Projeto
+Pré-requisitos
 
-### `npm run eject`
+Node.js 18+
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+npm (ou yarn)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Passos para execução
+# Clonar o repositório
+git clone https://github.com/seu-usuario/oraculum-frontend.git
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Entrar na pasta do projeto
+cd oraculum-frontend
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Instalar as dependências
+npm install
+# ou
+yarn install
 
-## Learn More
+# Executar o projeto
+npm start
+# ou
+yarn start
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Após a inicialização, o projeto estará disponível em:
+http://localhost:3000/
 
-### Code Splitting
+Estrutura do Projeto
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+A estrutura atual do projeto é a seguinte:
 
-### Analyzing the Bundle Size
+oraculum-frontend/
+├── assets/         # Imagens, ícones e outros arquivos estáticos
+├── components/     # Componentes reutilizáveis
+├── data/           # Dados e configurações locais
+├── pages/          # Páginas principais da aplicação
+├── App.js          # Componente raiz
+├── index.css       # Estilos globais
+└── index.js        # Ponto de entrada da aplicação
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Boas Práticas e Padrões
 
-### Making a Progressive Web App
+Código padronizado conforme as regras do ESLint do Create React App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Componentes nomeados em PascalCase
 
-### Advanced Configuration
+Separação clara entre lógica, layout e estilo
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Utilização de hooks para gerenciamento de estado e efeitos
 
-### Deployment
+Estrutura modular e de fácil manutenção
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Licença
 
-### `npm run build` fails to minify
+Este projeto está sob a licença MIT.
+Consulte o arquivo LICENSE para mais informações.
+
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

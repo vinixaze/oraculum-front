@@ -84,10 +84,3 @@ Utilização de hooks para gerenciamento de estado e efeitos
 
 Estrutura modular e de fácil manutenção
 
-Licença
-
-Este projeto está sob a licença MIT.
-Consulte o arquivo LICENSE para mais informações.
-
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

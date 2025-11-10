@@ -124,52 +124,7 @@ function QuizQuestions() {
     }
   };
 
-  const handleRestart = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setScore(0);
-    setQuizFinished(false);
-  };
-
-  const handleFinish = () => {
-    navigate('/quiz', { state: { email } });
-  };
-
   if (!email) return null;
-
-  if (quizFinished) {
-    const percentage = Math.round((score / questions.length) * 100);
-    
-    return (
-      <div className="quiz-questions-page">
-        <Header />
-        
-        <main className="quiz-questions-container">
-          <div className="quiz-card">
-            <div className="quiz-result">
-              <div className="result-icon">🎉</div>
-              <h1 className="result-title">Quiz Concluído!</h1>
-              <div className="result-score">
-                {score} / {questions.length}
-              </div>
-              <p className="result-message">
-                Você acertou {percentage}% das questões!
-              </p>
-              
-              <div className="quiz-actions" style={{ justifyContent: 'center' }}>
-                <Button variant="outline" onClick={handleRestart}>
-                  Refazer Quiz
-                </Button>
-                <Button variant="yellow" onClick={handleFinish}>
-                  Finalizar
-                </Button>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="quiz-questions-page">
@@ -187,8 +142,15 @@ function QuizQuestions() {
 
         <div className="quiz-card">
           <div className="question-header">
-            <h2 className="question-title">Pergunta sobre o tema...</h2>
-            <span className="question-counter">...{currentQuestion + 1}?</span>
+            <h2 className="question-title">Pergunta sobre o tema</h2>
+            <span className="question-counter">{currentQuestion + 1}?</span>
+            <button 
+              className="hint-button-header" 
+              onClick={() => setShowHint(true)}
+            >
+              <span className="hint-icon">💡</span>
+              <span>Dica</span>
+            </button>
           </div>
 
           <p className="question-text">{question.question}</p>
@@ -224,10 +186,6 @@ function QuizQuestions() {
             </Button>
           </div>
         </div>
-
-        <button className="hint-button" onClick={() => setShowHint(true)}>
-          Dica
-        </button>
 
         {showHint && (
           <HintModal

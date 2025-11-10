@@ -6,6 +6,8 @@ import QuizQuestions from './pages/QuizQuestions';
 import Completion from './pages/Completion';
 import Trail from './pages/Trail';
 import Summary from './pages/Summary';
+import ManagerDashboard from './pages/ManagerDashboard';
+import CollaboratorDetail from './pages/CollaboratorDetail';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
         <Route path="/completion" element={<Completion />} />
         <Route path="/trail" element={<Trail />} />
         <Route path="/summary" element={<Summary />} />
+        <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+        <Route path="/manager/collaborator" element={<CollaboratorDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

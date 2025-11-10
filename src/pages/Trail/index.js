@@ -140,82 +140,88 @@ function Trail() {
 
             <h1 className="trail-title">{currentLesson.title}</h1>
 
-            <div className="video-player-container">
-              <iframe
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${currentLesson.videoId}`}
-                title={currentLesson.title}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+            {/* Seção do vídeo que ocupa a tela inicialmente */}
+            <div className="video-section">
+              <div className="video-player-container">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${currentLesson.videoId}`}
+                  title={currentLesson.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
             </div>
 
-            <div className="lesson-description">
-              <h3>Texto sobre o vídeo...</h3>
-              <p>
-                Este é um conteúdo introdutório sobre segurança da informação. 
-                Aqui você aprenderá os conceitos fundamentais necessários para 
-                proteger dados e sistemas em ambientes digitais.
-              </p>
-            </div>
+            {/* Conteúdo que aparece ao scrollar */}
+            <div className="content-below-fold">
+              <div className="lesson-description">
+                <h3>Texto sobre o vídeo...</h3>
+                <p>
+                  Este é um conteúdo introdutório sobre segurança da informação. 
+                  Aqui você aprenderá os conceitos fundamentais necessários para 
+                  proteger dados e sistemas em ambientes digitais.
+                </p>
+              </div>
 
-            <div className="lesson-tabs">
-              <button 
-                className={`tab ${activeTab === 'links' ? 'active' : ''}`}
-                onClick={() => setActiveTab('links')}
-              >
-                Links Úteis
-              </button>
-              <button 
-                className={`tab ${activeTab === 'notes' ? 'active' : ''}`}
-                onClick={() => setActiveTab('notes')}
-              >
-                Anotações
-              </button>
-              <button 
-                className={`tab ${activeTab === 'recommendations' ? 'active' : ''}`}
-                onClick={() => setActiveTab('recommendations')}
-              >
-                Recomendações
-              </button>
-            </div>
+              <div className="lesson-tabs">
+                <button 
+                  className={`tab ${activeTab === 'links' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('links')}
+                >
+                  Links Úteis
+                </button>
+                <button 
+                  className={`tab ${activeTab === 'notes' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('notes')}
+                >
+                  Anotações
+                </button>
+                <button 
+                  className={`tab ${activeTab === 'recommendations' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('recommendations')}
+                >
+                  Recomendações
+                </button>
+              </div>
 
-            <div className="tab-content">
-              {activeTab === 'links' && (
-                <div className="links-section">
-                  <p>Links úteis relacionados a esta aula...</p>
-                  <ul>
-                    <li><a href="https://www.cloudflare.com/learning/" target="_blank" rel="noopener noreferrer">Cloudflare Learning Center</a></li>
-                    <li><a href="https://owasp.org/" target="_blank" rel="noopener noreferrer">OWASP - Segurança em Aplicações</a></li>
-                    <li><a href="https://www.cisecurity.org/" target="_blank" rel="noopener noreferrer">CIS Security</a></li>
-                  </ul>
-                </div>
-              )}
+              <div className="tab-content">
+                {activeTab === 'links' && (
+                  <div className="links-section">
+                    <p>Links úteis relacionados a esta aula...</p>
+                    <ul>
+                      <li><a href="https://www.cloudflare.com/learning/" target="_blank" rel="noopener noreferrer">Cloudflare Learning Center</a></li>
+                      <li><a href="https://owasp.org/" target="_blank" rel="noopener noreferrer">OWASP - Segurança em Aplicações</a></li>
+                      <li><a href="https://www.cisecurity.org/" target="_blank" rel="noopener noreferrer">CIS Security</a></li>
+                    </ul>
+                  </div>
+                )}
 
-              {activeTab === 'notes' && (
-                <div className="notes-section">
-                  <textarea
-                    value={notes}
-                    onChange={handleNotesChange}
-                    placeholder="Digite aqui suas anotações..."
-                    maxLength={25000}
-                  />
-                  <div className="notes-counter">{notes.length}/25000</div>
-                </div>
-              )}
+                {activeTab === 'notes' && (
+                  <div className="notes-section">
+                    <textarea
+                      value={notes}
+                      onChange={handleNotesChange}
+                      placeholder="Digite aqui suas anotações..."
+                      maxLength={25000}
+                    />
+                    <div className="notes-counter">{notes.length}/25000</div>
+                  </div>
+                )}
 
-              {activeTab === 'recommendations' && (
-                <div className="recommendations-section">
-                  <p>Recomendações de próximos passos...</p>
-                  <ul>
-                    <li>Pratique os conceitos aprendidos</li>
-                    <li>Revise o material anterior se necessário</li>
-                    <li>Participe dos fóruns de discussão</li>
-                  </ul>
-                </div>
-              )}
+                {activeTab === 'recommendations' && (
+                  <div className="recommendations-section">
+                    <p>Recomendações de próximos passos...</p>
+                    <ul>
+                      <li>Pratique os conceitos aprendidos</li>
+                      <li>Revise o material anterior se necessário</li>
+                      <li>Participe dos fóruns de discussão</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

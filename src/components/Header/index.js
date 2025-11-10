@@ -1,9 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import logo from '../../assets/OraculumLogo.png';
 
 function Header() {
+  const navigate = useNavigate();
+
+  const handleManagerPortal = (e) => {
+    e.preventDefault();
+    navigate('/manager/dashboard');
+  };
+
   return (
     <header className="header">
       <div className="header-container">
@@ -13,8 +20,7 @@ function Header() {
           </div>
         </Link>
         
-        
-        <a href="#" className="header-link">
+        <a href="#" className="header-link" onClick={handleManagerPortal}>
           PORTAL DO GESTOR
         </a>
       </div>

@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/oraculum-front/static/css/main.a0765ea9.css",
+    "main.js": "/oraculum-front/static/js/main.57145b11.js",
+    "static/media/imagem-completion.jpg": "/oraculum-front/static/media/imagem-completion.602dbd8b5a0bce11d38e.jpg",
+    "static/media/imagem-summary.jpg": "/oraculum-front/static/media/imagem-summary.cf1c346b60291a96bbea.jpg",
+    "static/media/foto-home.avif": "/oraculum-front/static/media/foto-home.059ae149bcf6fe2fb799.avif",
+    "static/media/OraculumLogo.png": "/oraculum-front/static/media/OraculumLogo.c20bfc9aec6fcb8bdbb4.png",
+    "static/media/foto-quiz.avif": "/oraculum-front/static/media/foto-quiz.71cce363f10c2533ea7c.avif",
+    "index.html": "/oraculum-front/index.html",
+    "main.a0765ea9.css.map": "/oraculum-front/static/css/main.a0765ea9.css.map",
+    "main.57145b11.js.map": "/oraculum-front/static/js/main.57145b11.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a0765ea9.css",
+    "static/js/main.57145b11.js"
+  ]
+}

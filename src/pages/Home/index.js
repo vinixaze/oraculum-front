@@ -5,6 +5,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { MailIcon } from '../../components/Icons';
 import { useToast } from '../../components/Toast';
+import api from '../../services/api';
 import './Home.css';
 
 function Home() {
@@ -32,10 +33,36 @@ function Home() {
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      console.log('Registrando usuário...');
+      const { user } = await api.registerUser(email);
+      console.log('Usuário registrado:', user);
+
+      try {
+        const { result } = await api.getQuizResult(email);
+        if (result) {
+          console.log('Quiz já foi completado, indo direto para trilha');
+          toast.success('Bem-vindo de volta! Você já completou o quiz.');
+          navigate('/trail', { 
+            state: { 
+              email,
+              fromQuizCompletion: true 
+            } 
+          });
+          return;
+        }
+      } catch (err) {
+        console.log('Quiz não completado ainda');
+      }
+
       navigate('/quiz', { state: { email } });
-    }, 300);
+      
+    } catch (error) {
+      console.error('Erro ao registrar:', error);
+      toast.error('Erro ao acessar o sistema. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,6 +87,7 @@ function Home() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 icon={<MailIcon />}
+                disabled={isSubmitting}
               />
               
               <Button 

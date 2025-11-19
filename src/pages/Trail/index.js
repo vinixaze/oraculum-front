@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
+import api from '../../services/api';
 import './Trail.css';
 
 const modulesData = [
@@ -65,31 +66,45 @@ function Trail() {
     
     if (stateEmail) {
       setEmail(stateEmail);
+
+      const loadProgress = async () => {
+        try {
+          console.log('Carregando progresso da trilha...');
+          const { progress } = await api.getTrailProgress(stateEmail);
+          if (progress) {
+            console.log('Progresso carregado:', progress);
+            setCompletedLessons(progress.completedLessons || []);
+            if (progress.notes) setNotes(progress.notes);
+          } else {
+            console.log('ℹNenhum progresso anterior encontrado');
+          }
+        } catch (error) {
+          console.error('Erro ao carregar progresso:', error);
+        }
+      };
       
-      const quizCompleted = localStorage.getItem(`quiz_completed_${stateEmail}`);
-      if (!quizCompleted) {
-        navigate('/', { replace: true });
-        return;
-      }
-      
-      const savedProgress = localStorage.getItem(`trail_progress_${stateEmail}`);
-      if (savedProgress) {
-        const progress = JSON.parse(savedProgress);
-        setCompletedLessons(progress.completedLessons || []);
-        if (progress.notes) setNotes(progress.notes);
-      }
+      loadProgress();
     } else {
+      console.log('Email não encontrado, redirecionando...');
       navigate('/', { replace: true });
     }
   }, [location.state, navigate]);
 
-  const saveProgress = (completed, currentNotes) => {
-    const progress = {
-      completedLessons: completed,
-      notes: currentNotes,
-      lastAccess: new Date().toISOString()
-    };
-    localStorage.setItem(`trail_progress_${email}`, JSON.stringify(progress));
+  const saveProgress = async (completed, currentNotes) => {
+    if (!email) return;
+
+    try {
+      console.log('Salvando progresso no backend...');
+      await api.saveTrailProgress(email, {
+        completedLessons: completed,
+        notes: currentNotes,
+        currentModule: 1,
+        currentLesson: currentLesson.id
+      });
+      console.log('Progresso salvo!');
+    } catch (error) {
+      console.error('Erro ao salvar progresso:', error);
+    }
   };
 
   const toggleModule = (moduleId) => {
@@ -104,18 +119,18 @@ function Trail() {
     setCurrentLesson(lesson);
   };
 
-  const markAsCompleted = () => {
+  const markAsCompleted = async () => {
     if (!completedLessons.includes(currentLesson.id)) {
       const updated = [...completedLessons, currentLesson.id];
       setCompletedLessons(updated);
-      saveProgress(updated, notes);
+      await saveProgress(updated, notes);
     }
   };
 
-  const handleNotesChange = (e) => {
+  const handleNotesChange = async (e) => {
     const newNotes = e.target.value;
     setNotes(newNotes);
-    saveProgress(completedLessons, newNotes);
+    await saveProgress(completedLessons, newNotes);
   };
 
   const totalLessons = modulesData.reduce((acc, mod) => acc + mod.lessons.length, 0);
@@ -140,7 +155,6 @@ function Trail() {
 
             <h1 className="trail-title">{currentLesson.title}</h1>
 
-            {/* Seção do vídeo que ocupa a tela inicialmente */}
             <div className="video-section">
               <div className="video-player-container">
                 <iframe
@@ -155,7 +169,6 @@ function Trail() {
               </div>
             </div>
 
-            {/* Conteúdo que aparece ao scrollar */}
             <div className="content-below-fold">
               <div className="lesson-description">
                 <h3>Texto sobre o vídeo...</h3>

@@ -3,28 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
 import HintModal from '../../components/HintModal';
+import api from '../../services/api';
 import './QuizQuestions.css';
 
 let questionsData;
 try {
   questionsData = require('../../data/questions.json');
 } catch (error) {
-  questionsData = {
-    questions: [
-      {
-        id: 1,
-        question: "O que é computação em nuvem?",
-        options: [
-          "Armazenamento de dados apenas no computador local",
-          "Acesso a recursos de computação pela internet",
-          "Um tipo de backup físico",
-          "Uma rede social"
-        ],
-        correctAnswer: 1,
-        hint: "Pense em acessar arquivos de qualquer lugar pela internet."
-      }
-    ]
-  };
+  questionsData = { questions: [] };
 }
 
 function QuizQuestions() {
@@ -34,10 +20,8 @@ function QuizQuestions() {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [quizFinished, setQuizFinished] = useState(false);
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [sessionStarted, setSessionStarted] = useState(false);
 
   const questions = questionsData.questions;
   const question = questions[currentQuestion];
@@ -49,71 +33,63 @@ function QuizQuestions() {
       return;
     }
 
-    const completed = localStorage.getItem(`quiz_completed_${email}`);
-    if (completed) {
-      const data = JSON.parse(completed);
-      navigate('/completion', { 
-        state: { email, score: data.score, total: data.total } 
-      });
-      return;
-    }
+    const initQuiz = async () => {
+      try {
+        console.log('Iniciando quiz...');
+        await api.startQuiz(email, 'MEDIO');
+        setSessionStarted(true);
+        console.log('Quiz iniciado');
+      } catch (error) {
+        console.error('Erro ao iniciar quiz:', error);
+      }
+    };
 
-    const savedProgress = localStorage.getItem(`quiz_progress_${email}`);
-    if (savedProgress) {
-      const progress = JSON.parse(savedProgress);
-      setCurrentQuestion(progress.currentQuestion);
-      setScore(progress.score);
-      setUserAnswers(progress.userAnswers || []);
-    }
+    initQuiz();
   }, [email, navigate]);
 
   const handleSelectAnswer = (index) => {
     setSelectedAnswer(index);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedAnswer === null) return;
 
-    let newScore = score;
-    if (selectedAnswer === question.correctAnswer) {
-      newScore = score + 1;
-      setScore(newScore);
-    }
+    const isCorrect = selectedAnswer === question.correctAnswer;
+    
+    const dificuldade = question.id <= 5 ? 'INICIANTE' : 'EXPERT';
 
-    const newAnswers = [...userAnswers, selectedAnswer];
-    setUserAnswers(newAnswers);
-
-    if (isLastQuestion) {
-      const completionData = {
+    try {
+      console.log('Enviando resposta...');
+      const response = await api.submitAnswer(
         email,
-        score: newScore,
-        total: questions.length,
-        completedAt: new Date().toISOString(),
-        percentage: Math.round((newScore / questions.length) * 100)
-      };
-      
-      localStorage.setItem(`quiz_completed_${email}`, JSON.stringify(completionData));
-      localStorage.removeItem(`quiz_progress_${email}`);
+        question.id,
+        isCorrect,
+        dificuldade
+      );
+      console.log('Resposta processada:', response);
 
-      navigate('/completion', { 
-        state: { 
-          email, 
-          score: newScore, 
-          total: questions.length 
-        },
-        replace: true
-      });
-    } else {
-      const nextQuestion = currentQuestion + 1;
-      setCurrentQuestion(nextQuestion);
-      setSelectedAnswer(null);
-      
-      const progress = {
-        currentQuestion: nextQuestion,
-        score: newScore,
-        userAnswers: newAnswers
-      };
-      localStorage.setItem(`quiz_progress_${email}`, JSON.stringify(progress));
+      if (isLastQuestion) {
+        console.log('Finalizando quiz...');
+        const { relatorio } = await api.submitQuiz(email);
+        console.log('Quiz finalizado:', relatorio);
+
+        navigate('/completion', { 
+          state: { 
+            email, 
+            score: relatorio.acertos,
+            total: relatorio.totalPerguntas,
+            nivel: relatorio.nivelFinal,
+            pontuacao: relatorio.pontuacaoFinal
+          },
+          replace: true
+        });
+      } else {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer(null);
+      }
+    } catch (error) {
+      console.error('Erro ao processar resposta:', error);
+      alert('Erro ao processar resposta. Tente novamente.');
     }
   };
 
@@ -124,7 +100,16 @@ function QuizQuestions() {
     }
   };
 
-  if (!email) return null;
+  if (!email || !sessionStarted) return (
+    <div className="quiz-questions-page">
+      <Header />
+      <main className="quiz-questions-container">
+        <div className="quiz-header">
+          <h1 className="quiz-header-title">Carregando quiz...</h1>
+        </div>
+      </main>
+    </div>
+  );
 
   return (
     <div className="quiz-questions-page">

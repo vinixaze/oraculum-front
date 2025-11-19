@@ -14,19 +14,9 @@ function Completion() {
     
     if (stateData?.email && stateData?.score !== undefined) {
       setCompletionData(stateData);
-      
-      const saved = localStorage.getItem(`quiz_completed_${stateData.email}`);
-      if (!saved) {
-        const completionInfo = {
-          email: stateData.email,
-          score: stateData.score,
-          total: stateData.total,
-          completedAt: new Date().toISOString(),
-          percentage: Math.round((stateData.score / stateData.total) * 100)
-        };
-        localStorage.setItem(`quiz_completed_${stateData.email}`, JSON.stringify(completionInfo));
-      }
+      console.log('Dados de conclusão:', stateData);
     } else {
+      console.log('Sem dados de conclusão, redirecionando...');
       navigate('/', { replace: true });
     }
   }, [location.state, navigate]);
@@ -35,9 +25,8 @@ function Completion() {
     if (completionData) {
       navigate('/trail', { 
         state: { 
-          email: completionData.email, 
-          score: completionData.score, 
-          total: completionData.total 
+          email: completionData.email,
+          fromQuizCompletion: true
         } 
       });
     }
@@ -66,6 +55,12 @@ function Completion() {
 
           <div style={{ marginBottom: '1rem', color: '#1e40af', fontSize: '1.125rem' }}>
             <p>Você acertou <strong>{completionData.score}</strong> de <strong>{completionData.total}</strong> questões ({percentage}%)</p>
+            {completionData.nivel && (
+              <p>Nível: <strong>{completionData.nivel}</strong></p>
+            )}
+            {completionData.pontuacao && (
+              <p>Pontuação: <strong>{completionData.pontuacao}</strong> pontos</p>
+            )}
           </div>
 
           <Button 

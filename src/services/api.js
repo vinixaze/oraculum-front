@@ -12,8 +12,10 @@ class ApiService {
     };
 
     try {
-      console.log('[API] Fazendo requisição:', url);
-      console.log('[API] Dados:', options.body);
+      console.log('[API] Requisição:', url);
+      if (options.body) {
+        console.log('[API] Payload:', JSON.parse(options.body));
+      }
 
       const response = await fetch(url, config);
       const data = await response.json();
@@ -26,7 +28,7 @@ class ApiService {
 
       return data;
     } catch (error) {
-      console.error('[API] Erro:', error);
+      console.error('[API] Erro:', error.message);
       throw error;
     }
   }
@@ -49,14 +51,17 @@ class ApiService {
     });
   }
 
-  async submitAnswer(email, questaoId, respostaCorreta, dificuldadeQuestao) {
+  async getNextQuestion(email) {
+    return this.request(`/quiz/next-question/${email}`);
+  }
+
+  async submitAnswer(email, perguntaId, alternativaEscolhidaId) {
     return this.request('/quiz/answer', {
       method: 'POST',
       body: JSON.stringify({ 
         email, 
-        questaoId, 
-        respostaCorreta, 
-        dificuldadeQuestao 
+        perguntaId, 
+        alternativaEscolhidaId 
       }),
     });
   }

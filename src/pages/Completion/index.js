@@ -14,9 +14,9 @@ function Completion() {
     
     if (stateData?.email && stateData?.score !== undefined) {
       setCompletionData(stateData);
-      console.log('Dados de conclusão:', stateData);
+      console.log('📊 Dados de conclusão:', stateData);
     } else {
-      console.log('Sem dados de conclusão, redirecionando...');
+      console.log('⚠️ Sem dados de conclusão, redirecionando...');
       navigate('/', { replace: true });
     }
   }, [location.state, navigate]);
@@ -34,7 +34,14 @@ function Completion() {
 
   if (!completionData) return null;
 
-  const percentage = Math.round((completionData.score / completionData.total) * 100);
+  const getNivelDescription = (nivel) => {
+    const descriptions = {
+      'AVANÇADO': 'Você demonstrou domínio técnico sólido! 🎯',
+      'INTERMEDIÁRIO': 'Você possui conhecimento funcional consistente! 📚',
+      'INICIANTE': 'Continue estudando, você está no caminho certo! 🌱'
+    };
+    return descriptions[nivel] || '';
+  };
 
   return (
     <div className="completion-page">
@@ -47,21 +54,48 @@ function Completion() {
             de nivelamento!
           </h1>
 
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.95)', 
+            padding: '2rem', 
+            borderRadius: '12px',
+            marginBottom: '2rem',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+          }}>
+            <h2 style={{ 
+              color: '#1e40af', 
+              fontSize: '1.5rem', 
+              marginBottom: '1rem',
+              fontWeight: '600'
+            }}>
+              📊 Seu Resultado
+            </h2>
+
+            <div style={{ color: '#1e40af', fontSize: '1.125rem', lineHeight: '1.8' }}>
+              <p><strong>Perguntas respondidas:</strong> {completionData.total}</p>
+              <p><strong>Acertos:</strong> {completionData.score} ({completionData.percentual || Math.round((completionData.score / completionData.total) * 100)}%)</p>
+              <p><strong>Pontuação final:</strong> {completionData.pontuacao} pontos</p>
+              <p><strong>Nível classificado:</strong> <span style={{ 
+                fontSize: '1.25rem', 
+                fontWeight: '700',
+                color: completionData.nivel === 'AVANÇADO' ? '#059669' : 
+                       completionData.nivel === 'INTERMEDIÁRIO' ? '#2563eb' : '#dc2626'
+              }}>{completionData.nivel}</span></p>
+              
+              <p style={{ 
+                marginTop: '1rem', 
+                fontStyle: 'italic',
+                color: '#4a5568'
+              }}>
+                {getNivelDescription(completionData.nivel)}
+              </p>
+            </div>
+          </div>
+
           <p className="completion-subtitle">
             Agora começa a sua jornada<br />
-            de aprendizado em<br />
+            de aprendizado personalizado em<br />
             Segurança da Informação.
           </p>
-
-          <div style={{ marginBottom: '1rem', color: '#1e40af', fontSize: '1.125rem' }}>
-            <p>Você acertou <strong>{completionData.score}</strong> de <strong>{completionData.total}</strong> questões ({percentage}%)</p>
-            {completionData.nivel && (
-              <p>Nível: <strong>{completionData.nivel}</strong></p>
-            )}
-            {completionData.pontuacao && (
-              <p>Pontuação: <strong>{completionData.pontuacao}</strong> pontos</p>
-            )}
-          </div>
 
           <Button 
             variant="yellow" 
@@ -69,7 +103,7 @@ function Completion() {
             onClick={handleStartTrail}
             className="completion-button"
           >
-            INICIAR TRILHA
+            INICIAR TRILHA DE APRENDIZADO
           </Button>
         </div>
       </main>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
+import HintModal from '../../components/HIntModal';
 import { useToast } from '../../components/Toast';
 import api from '../../services/api';
 import './QuizQuestions.css';
@@ -22,6 +23,7 @@ function QuizQuestions() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
     if (!email) {
@@ -71,7 +73,7 @@ function QuizQuestions() {
           perguntaNumero: response.perguntaNumero
         });
         setSelectedAnswer(null);
-        console.log(`📝 Pergunta ${response.perguntaNumero} carregada (${response.nivelAtual})`);
+        console.log(`📝 Pergunta ${response.perguntaNumero} carregada`);
       }
 
     } catch (error) {
@@ -98,18 +100,10 @@ function QuizQuestions() {
         selectedAnswer
       );
 
-      console.log('✅ Resposta processada:', response);
+      console.log('✅ Resposta processada');
 
-      if (response.mudouNivel) {
-        toast.info(response.mensagem);
-      }
-
-      if (response.acertou) {
-        toast.success(`Acertou! +${response.pontosGanhos} pontos`);
-      } else {
-        toast.error('Resposta incorreta');
-      }
-
+      // Não mostrar mais feedback de acerto/erro
+      
       if (response.finalizado) {
         console.log('🏁 Quiz finalizado após resposta');
         await handleQuizFinished();
@@ -188,18 +182,26 @@ function QuizQuestions() {
             Quiz de Nivelamento em Cibersegurança
           </h1>
           <p className="quiz-header-subtitle">
-            Nível: <strong>{quizStatus.nivelAtual}</strong> | 
-            Pontuação: <strong>{quizStatus.pontuacaoAtual}</strong> pontos | 
-            Pergunta <strong>{quizStatus.perguntaNumero}</strong>
+            Pergunta <strong>{quizStatus.perguntaNumero}</strong> de 12
           </p>
         </div>
 
         <div className="quiz-card">
           <div className="question-header">
             <h2 className="question-title">
-              {currentQuestion.dificuldade === 'INICIANTE' ? '📘 Pergunta INICIANTE' : '📕 Pergunta EXPERT'}
+              Pergunta {quizStatus.perguntaNumero}
             </h2>
-            <span className="question-counter">{quizStatus.perguntaNumero}</span>
+            
+            {currentQuestion.dica && (
+              <button
+                className="hint-button-header"
+                onClick={() => setShowHint(true)}
+                type="button"
+              >
+                <span className="hint-icon">💡</span>
+                Dica
+              </button>
+            )}
           </div>
 
           <p className="question-text">{currentQuestion.texto}</p>
@@ -232,6 +234,13 @@ function QuizQuestions() {
           </div>
         </div>
       </main>
+
+      {showHint && currentQuestion.dica && (
+        <HintModal
+          hint={currentQuestion.dica}
+          onClose={() => setShowHint(false)}
+        />
+      )}
     </div>
   );
 }

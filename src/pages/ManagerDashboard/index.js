@@ -8,9 +8,17 @@ function ManagerDashboard() {
   const navigate = useNavigate();
   const [collaborators, setCollaborators] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [adminEmail, setAdminEmail] = useState('admin@empresa.com'); // Simular admin
+  const [adminEmail, setAdminEmail] = useState('admin@empresa.com');
 
   useEffect(() => {
+    // Verificar autenticação
+    const isAuthenticated = sessionStorage.getItem('adminAuth') === 'true';
+    
+    if (!isAuthenticated) {
+      navigate('/admin', { replace: true });
+      return;
+    }
+
     const loadDashboard = async () => {
       try {
         console.log('Carregando dashboard...');
@@ -25,10 +33,15 @@ function ManagerDashboard() {
     };
 
     loadDashboard();
-  }, [adminEmail]);
+  }, [adminEmail, navigate]);
 
   const handleCollaboratorClick = (email) => {
     navigate('/manager/collaborator', { state: { email, adminEmail } });
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('adminAuth');
+    navigate('/admin');
   };
 
   if (isLoading) {
@@ -47,7 +60,28 @@ function ManagerDashboard() {
       <Header />
       
       <main className="manager-main">
-        <h1 className="manager-title">Bem vindo(a) a verificação de resultados da equipe</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h1 className="manager-title" style={{ margin: 0 }}>
+            Bem vindo(a) a verificação de resultados da equipe
+          </h1>
+          <button 
+            onClick={handleLogout}
+            style={{
+              background: 'white',
+              color: '#1E2B5F',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.opacity = '0.9'}
+            onMouseOut={(e) => e.target.style.opacity = '1'}
+          >
+            🚪 Sair
+          </button>
+        </div>
 
         <div className="dashboard-content">
           <div className="dashboard-section">

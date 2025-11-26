@@ -26,11 +26,9 @@ function AdminLogin() {
 
     setIsSubmitting(true);
 
-    // Simular validação
     setTimeout(() => {
       if (password === ADMIN_PASSWORD) {
         toast.success('Login realizado com sucesso!');
-        // Salvar autenticação no sessionStorage
         sessionStorage.setItem('adminAuth', 'true');
         navigate('/manager/dashboard');
       } else {

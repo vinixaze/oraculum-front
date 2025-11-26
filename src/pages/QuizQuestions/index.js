@@ -24,6 +24,7 @@ function QuizQuestions() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [usedHint, setUsedHint] = useState(false);
 
   useEffect(() => {
     if (!email) {
@@ -73,6 +74,7 @@ function QuizQuestions() {
           perguntaNumero: response.perguntaNumero
         });
         setSelectedAnswer(null);
+        setUsedHint(false);
         console.log(`📝 Pergunta ${response.perguntaNumero} carregada`);
       }
 
@@ -86,6 +88,12 @@ function QuizQuestions() {
     setSelectedAnswer(alternativaId);
   };
 
+    const handleShowHint = () => {
+    setShowHint(true);
+    setUsedHint(true);
+    console.log('💡 Dica utilizada - pontos serão reduzidos em 50%');
+  };
+
   const handleSubmitAnswer = async () => {
     if (selectedAnswer === null || isSubmitting) return;
 
@@ -94,16 +102,19 @@ function QuizQuestions() {
     try {
       console.log('📤 Enviando resposta...');
       
-      const response = await api.submitAnswer(
+            const response = await api.submitAnswer(
         email,
         currentQuestion.id,
-        selectedAnswer
+        selectedAnswer,
+        usedHint
       );
 
       console.log('✅ Resposta processada');
 
-      // Não mostrar mais feedback de acerto/erro
-      
+      if (usedHint) {
+        toast.info('💡 Dica usada: pontos reduzidos em 50%');
+      }
+
       if (response.finalizado) {
         console.log('🏁 Quiz finalizado após resposta');
         await handleQuizFinished();
@@ -133,7 +144,8 @@ function QuizQuestions() {
           total: relatorio.totalPerguntas,
           nivel: relatorio.nivelFinal,
           pontuacao: relatorio.pontuacaoFinal,
-          percentual: relatorio.percentualConclusao
+          percentual: relatorio.percentualConclusao,
+          dicasUsadas: relatorio.dicasUsadas
         },
         replace: true
       });
@@ -194,15 +206,22 @@ function QuizQuestions() {
             
             {currentQuestion.dica && (
               <button
-                className="hint-button-header"
-                onClick={() => setShowHint(true)}
+                className={`hint-button-header ${usedHint ? 'hint-used' : ''}`}
+                onClick={handleShowHint}
                 type="button"
+                disabled={usedHint}
               >
                 <span className="hint-icon">💡</span>
-                Dica
-              </button>
+                {usedHint ? 'Dica Usada' : 'Dica'}  
+                </button>
             )}
           </div>
+
+          {usedHint && (
+            <div className="hint-warning">
+              ⚠️ Você usou a dica - seus pontos para esta questão serão reduzidos em 50%
+            </div>
+          )}
 
           <p className="question-text">{currentQuestion.texto}</p>
 

@@ -7,6 +7,7 @@ import './ManagerDashboard.css';
 function ManagerDashboard() {
   const navigate = useNavigate();
   const [collaborators, setCollaborators] = useState([]);
+  const [statistics, setStatistics] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [adminEmail] = useState('admin@empresa.com');
   const [stats, setStats] = useState({
@@ -18,25 +19,19 @@ function ManagerDashboard() {
 
   useEffect(() => {
     const isAuthenticated = sessionStorage.getItem('adminAuth') === 'true';
-    
     if (!isAuthenticated) {
       navigate('/admin', { replace: true });
       return;
     }
-
     loadDashboard();
   }, [navigate]);
 
   const loadDashboard = async () => {
     try {
-      console.log('📊 Carregando dashboard...');
       const response = await api.getManagerDashboard(adminEmail);
-      
       if (response.dashboard) {
-        console.log('✅ Dashboard carregado:', response.dashboard);
         setCollaborators(response.dashboard);
-        
-        // Calcular estatísticas
+        setStatistics(response.statistics);
         const stats = {
           total: response.dashboard.length,
           completed: response.dashboard.filter(c => c.status === 'completed').length,
@@ -46,7 +41,7 @@ function ManagerDashboard() {
         setStats(stats);
       }
     } catch (error) {
-      console.error('❌ Erro ao carregar dashboard:', error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -94,26 +89,15 @@ function ManagerDashboard() {
   return (
     <div className="manager-dashboard-page">
       <Header />
-      
       <main className="manager-main">
         <div className="dashboard-header">
           <div>
-            <h1 className="manager-title">
-              Portal do Gestor - Dashboard de Treinamento
-            </h1>
-            <p className="manager-subtitle">
-              Acompanhe o progresso de toda a equipe em tempo real
-            </p>
+            <h1 className="manager-title">Portal do Gestor - Dashboard de Treinamento</h1>
+            <p className="manager-subtitle">Acompanhe o progresso de toda a equipe em tempo real</p>
           </div>
-          <button 
-            onClick={handleLogout}
-            className="logout-button"
-          >
-            🚪 Sair
-          </button>
+          <button onClick={handleLogout} className="logout-button">🚪 Sair</button>
         </div>
 
-        {/* Estatísticas Gerais */}
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-icon">👥</div>
@@ -127,15 +111,15 @@ function ManagerDashboard() {
             <div className="stat-icon">✓</div>
             <div className="stat-content">
               <div className="stat-value">{stats.completed}</div>
-              <div className="stat-label">Completaram</div>
+              <div className="stat-label">Completaram Trilha</div>
             </div>
           </div>
 
           <div className="stat-card stat-progress">
-            <div className="stat-icon">⟳</div>
+            <div className="stat-icon">📝</div>
             <div className="stat-content">
-              <div className="stat-value">{stats.inProgress}</div>
-              <div className="stat-label">Em Progresso</div>
+              <div className="stat-value">{statistics?.usuariosQuizCompleto || 0}</div>
+              <div className="stat-label">Completaram Quiz</div>
             </div>
           </div>
 
@@ -148,12 +132,68 @@ function ManagerDashboard() {
           </div>
         </div>
 
-        {/* Tabela de Colaboradores */}
+        {statistics && (
+          <div className="stats-section">
+            <h2 className="section-title">📊 Distribuição por Nível</h2>
+
+            <div className="nivel-stats-grid">
+              <div className="nivel-card nivel-iniciante">
+                <div className="nivel-icon">🌱</div>
+                <div className="nivel-content">
+                  <div className="nivel-value">{statistics.usuariosPorNivel.iniciante}</div>
+                  <div className="nivel-label">INICIANTE</div>
+                  <div className="nivel-percentage">
+                    {statistics.usuariosQuizCompleto > 0
+                      ? Math.round((statistics.usuariosPorNivel.iniciante / statistics.usuariosQuizCompleto) * 100)
+                      : 0}%
+                  </div>
+                </div>
+              </div>
+
+              <div className="nivel-card nivel-intermediario">
+                <div className="nivel-icon">📚</div>
+                <div className="nivel-content">
+                  <div className="nivel-value">{statistics.usuariosPorNivel.intermediario}</div>
+                  <div className="nivel-label">INTERMEDIÁRIO</div>
+                  <div className="nivel-percentage">
+                    {statistics.usuariosQuizCompleto > 0
+                      ? Math.round((statistics.usuariosPorNivel.intermediario / statistics.usuariosQuizCompleto) * 100)
+                      : 0}%
+                  </div>
+                </div>
+              </div>
+
+              <div className="nivel-card nivel-avancado">
+                <div className="nivel-icon">🏆</div>
+                <div className="nivel-content">
+                  <div className="nivel-value">{statistics.usuariosPorNivel.avancado}</div>
+                  <div className="nivel-label">AVANÇADO</div>
+                  <div className="nivel-percentage">
+                    {statistics.usuariosQuizCompleto > 0
+                      ? Math.round((statistics.usuariosPorNivel.avancado / statistics.usuariosQuizCompleto) * 100)
+                      : 0}%
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="metricas-section">
+              <div className="metrica-item">
+                <span className="metrica-label">Pontuação Média:</span>
+                <span className="metrica-value">{statistics.metricas.pontuacaoMedia} pontos</span>
+              </div>
+
+              <div className="metrica-item">
+                <span className="metrica-label">Taxa de Acerto Média:</span>
+                <span className="metrica-value">{statistics.metricas.taxaAcertoMedia}%</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="dashboard-section">
-          <h2 className="section-title">
-            📋 Colaboradores ({collaborators.length})
-          </h2>
-          
+          <h2 className="section-title">📋 Colaboradores ({collaborators.length})</h2>
+
           <div className="table-wrapper">
             <table className="collaborators-table">
               <thead>
@@ -181,7 +221,7 @@ function ManagerDashboard() {
                     const statusBadge = getStatusBadge(collab.status);
                     return (
                       <tr 
-                        key={collab.email} 
+                        key={collab.email}
                         onClick={() => handleCollaboratorClick(collab.email)}
                         className="table-row-clickable"
                       >
@@ -196,32 +236,25 @@ function ManagerDashboard() {
                             </div>
                           </div>
                         </td>
-                        
+
                         <td>
-                          <span 
-                            className="status-badge"
-                            style={{ backgroundColor: statusBadge.color }}
-                          >
+                          <span className="status-badge" style={{ backgroundColor: statusBadge.color }}>
                             {statusBadge.icon} {statusBadge.text}
                           </span>
                         </td>
-                        
+
                         <td>
                           {collab.quizCompleted ? (
-                            <span className="quiz-status completed">
-                              ✓ Completo
-                            </span>
+                            <span className="quiz-status completed">✓ Completo</span>
                           ) : (
-                            <span className="quiz-status pending">
-                              ○ Pendente
-                            </span>
+                            <span className="quiz-status pending">○ Pendente</span>
                           )}
                         </td>
-                        
+
                         <td>
-                          <span 
+                          <span
                             className="nivel-badge"
-                            style={{ 
+                            style={{
                               backgroundColor: getNivelColor(collab.nivelFinal),
                               color: 'white',
                               padding: '4px 12px',
@@ -233,13 +266,11 @@ function ManagerDashboard() {
                             {collab.nivelFinal}
                           </span>
                         </td>
-                        
+
                         <td>
-                          <span className="pontuacao-value">
-                            {collab.pontuacaoFinal} pts
-                          </span>
+                          <span className="pontuacao-value">{collab.pontuacaoFinal} pts</span>
                         </td>
-                        
+
                         <td>
                           {collab.quizCompleted ? (
                             <span className="acertos-info">
@@ -252,7 +283,7 @@ function ManagerDashboard() {
                             <span className="na-text">-</span>
                           )}
                         </td>
-                        
+
                         <td>
                           <div className="progress-cell">
                             <div className="mini-progress-bar">
@@ -264,7 +295,7 @@ function ManagerDashboard() {
                             <span className="progress-text">{collab.progress}%</span>
                           </div>
                         </td>
-                        
+
                         <td>
                           <span className="last-access">
                             {collab.lastAccess 
@@ -280,6 +311,7 @@ function ManagerDashboard() {
             </table>
           </div>
         </div>
+
       </main>
     </div>
   );

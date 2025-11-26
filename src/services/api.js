@@ -33,7 +33,6 @@ class ApiService {
     }
   }
 
-  // User endpoints
   async registerUser(email, role = 'user') {
     return this.request('/users/register', {
       method: 'POST',
@@ -45,7 +44,6 @@ class ApiService {
     return this.request(`/users/${email}`);
   }
 
-  // Quiz endpoints
   async startQuiz(email, modo = 'MEDIO') {
     return this.request('/quiz/start', {
       method: 'POST',
@@ -63,7 +61,8 @@ class ApiService {
       body: JSON.stringify({ 
         email, 
         perguntaId, 
-        alternativaEscolhidaId 
+        alternativaEscolhidaId,
+        usouDIca
       }),
     });
   }

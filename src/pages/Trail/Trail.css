@@ -52,7 +52,6 @@
   margin-bottom: 1rem;
 }
 
-/* Seção do vídeo - ocupa toda a viewport inicialmente */
 .video-section {
   min-height: calc(100vh - 12rem);
   display: flex;
@@ -76,7 +75,6 @@
   border: none;
 }
 
-/* Conteúdo extra que aparece ao scrollar */
 .content-below-fold {
   margin-top: 2rem;
   padding-top: 2rem;
@@ -251,6 +249,9 @@
 
 .progress-section {
   margin-bottom: 1.5rem;
+  background: #2a2a4a;
+  padding: 1rem;
+  border-radius: 8px;
 }
 
 .progress-header {
@@ -264,20 +265,29 @@
 .progress-percentage {
   font-weight: 700;
   color: var(--oraculum-yellow);
+  font-size: 1.25rem;
 }
 
 .progress-bar {
-  height: 8px;
-  background: #2a2a4a;
-  border-radius: 4px;
+  height: 12px;
+  background: #1a1a2a;
+  border-radius: 6px;
   overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--oraculum-yellow);
+  background: linear-gradient(90deg, var(--oraculum-yellow) 0%, #FFD633 100%);
   transition: width 0.3s ease;
-  border-radius: 4px;
+  border-radius: 6px;
+}
+
+.progress-info-text {
+  text-align: center;
+  color: #a0a0c0;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
 }
 
 .search-section {
@@ -361,7 +371,8 @@
 
 .module-progress {
   font-size: 0.875rem;
-  color: #a0a0c0;
+  color: var(--oraculum-yellow);
+  font-weight: 600;
 }
 
 .module-icon {

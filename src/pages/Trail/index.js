@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
+import { useToast } from '../../components/Toast';
 import api from '../../services/api';
 import './Trail.css';
 
@@ -52,6 +53,7 @@ const modulesData = [
 function Trail() {
   const location = useLocation();
   const navigate = useNavigate();
+  const toast = useToast();
   const [email, setEmail] = useState(null);
 
   const [currentLesson, setCurrentLesson] = useState(modulesData[0].lessons[0]);
@@ -60,50 +62,77 @@ function Trail() {
   const [activeTab, setActiveTab] = useState('links');
   const [notes, setNotes] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const stateEmail = location.state?.email;
     
     if (stateEmail) {
       setEmail(stateEmail);
-
-      const loadProgress = async () => {
-        try {
-          console.log('Carregando progresso da trilha...');
-          const { progress } = await api.getTrailProgress(stateEmail);
-          if (progress) {
-            console.log('Progresso carregado:', progress);
-            setCompletedLessons(progress.completedLessons || []);
-            if (progress.notes) setNotes(progress.notes);
-          } else {
-            console.log('ℹNenhum progresso anterior encontrado');
-          }
-        } catch (error) {
-          console.error('Erro ao carregar progresso:', error);
-        }
-      };
-      
-      loadProgress();
+      loadProgress(stateEmail);
     } else {
       console.log('Email não encontrado, redirecionando...');
       navigate('/', { replace: true });
     }
   }, [location.state, navigate]);
 
-  const saveProgress = async (completed, currentNotes) => {
-    if (!email) return;
-
+  const loadProgress = async (userEmail) => {
     try {
-      console.log('Salvando progresso no backend...');
+      console.log('📥 Carregando progresso da trilha...');
+      const { progress } = await api.getTrailProgress(userEmail);
+      
+      if (progress) {
+        console.log('✅ Progresso carregado:', progress);
+        setCompletedLessons(progress.completedLessons || []);
+        if (progress.notes) setNotes(progress.notes);
+        
+        // Restaurar aula atual se existir
+        if (progress.currentLesson) {
+          const lesson = findLessonById(progress.currentLesson);
+          if (lesson) {
+            setCurrentLesson(lesson);
+          }
+        }
+      } else {
+        console.log('ℹ️ Nenhum progresso anterior encontrado');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar progresso:', error);
+    }
+  };
+
+  const findLessonById = (lessonId) => {
+    for (const module of modulesData) {
+      const lesson = module.lessons.find(l => l.id === lessonId);
+      if (lesson) return lesson;
+    }
+    return null;
+  };
+
+  const saveProgress = async (completed, currentNotes) => {
+    if (!email || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      console.log('💾 Salvando progresso...', {
+        completedLessons: completed,
+        currentLesson: currentLesson.id
+      });
+
       await api.saveTrailProgress(email, {
         completedLessons: completed,
         notes: currentNotes,
         currentModule: 1,
         currentLesson: currentLesson.id
       });
-      console.log('Progresso salvo!');
+
+      console.log('✅ Progresso salvo com sucesso!');
+      toast.success('Progresso salvo!');
     } catch (error) {
-      console.error('Erro ao salvar progresso:', error);
+      console.error('❌ Erro ao salvar progresso:', error);
+      toast.error('Erro ao salvar progresso');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -117,6 +146,8 @@ function Trail() {
 
   const selectLesson = (lesson) => {
     setCurrentLesson(lesson);
+    // Salvar automaticamente ao trocar de aula
+    saveProgress(completedLessons, notes);
   };
 
   const markAsCompleted = async () => {
@@ -124,13 +155,19 @@ function Trail() {
       const updated = [...completedLessons, currentLesson.id];
       setCompletedLessons(updated);
       await saveProgress(updated, notes);
+      toast.success('Aula concluída! 🎉');
+    } else {
+      toast.info('Esta aula já foi concluída');
     }
   };
 
-  const handleNotesChange = async (e) => {
+  const handleNotesChange = (e) => {
     const newNotes = e.target.value;
     setNotes(newNotes);
-    await saveProgress(completedLessons, newNotes);
+  };
+
+  const handleNotesSave = () => {
+    saveProgress(completedLessons, notes);
   };
 
   const totalLessons = modulesData.reduce((acc, mod) => acc + mod.lessons.length, 0);
@@ -217,10 +254,20 @@ function Trail() {
                     <textarea
                       value={notes}
                       onChange={handleNotesChange}
+                      onBlur={handleNotesSave}
                       placeholder="Digite aqui suas anotações..."
                       maxLength={25000}
                     />
                     <div className="notes-counter">{notes.length}/25000</div>
+                    <Button 
+                      variant="yellow" 
+                      size="sm" 
+                      onClick={handleNotesSave}
+                      disabled={isSaving}
+                      style={{ marginTop: '0.5rem' }}
+                    >
+                      {isSaving ? 'Salvando...' : 'Salvar Anotações'}
+                    </Button>
                   </div>
                 )}
 
@@ -246,7 +293,7 @@ function Trail() {
                 variant="yellow" 
                 size="sm"
                 onClick={markAsCompleted}
-                disabled={completedLessons.includes(currentLesson.id)}
+                disabled={completedLessons.includes(currentLesson.id) || isSaving}
               >
                 {completedLessons.includes(currentLesson.id) ? '✓ Concluída' : 'Concluir aula'}
               </Button>
@@ -259,6 +306,9 @@ function Trail() {
               </div>
               <div className="progress-bar">
                 <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+              </div>
+              <div className="progress-info-text">
+                {completedLessons.length} de {totalLessons} aulas concluídas
               </div>
             </div>
 

@@ -33,6 +33,7 @@ class ApiService {
     }
   }
 
+  // User endpoints
   async registerUser(email, role = 'user') {
     return this.request('/users/register', {
       method: 'POST',
@@ -44,6 +45,7 @@ class ApiService {
     return this.request(`/users/${email}`);
   }
 
+  // Quiz endpoints
   async startQuiz(email, modo = 'MEDIO') {
     return this.request('/quiz/start', {
       method: 'POST',
@@ -77,6 +79,7 @@ class ApiService {
     return this.request(`/quiz/result/${email}`);
   }
 
+  // Trail endpoints
   async saveTrailProgress(email, progressData) {
     return this.request('/trail/progress', {
       method: 'POST',
@@ -88,12 +91,13 @@ class ApiService {
     return this.request(`/trail/progress/${email}`);
   }
 
-  async getManagerDashboard(email) {
-    return this.request(`/manager/dashboard?email=${email}`);
+  // Manager endpoints
+  async getManagerDashboard(adminEmail) {
+    return this.request(`/manager/dashboard?email=${adminEmail}`);
   }
 
   async getCollaboratorDetail(email, adminEmail) {
-    return this.request(`/manager/collaborator/${email}?email=${adminEmail}`);
+    return this.request(`/manager/collaborator/${email}?adminEmail=${adminEmail}`);
   }
 }
 

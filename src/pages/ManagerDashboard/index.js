@@ -8,10 +8,15 @@ function ManagerDashboard() {
   const navigate = useNavigate();
   const [collaborators, setCollaborators] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [adminEmail, setAdminEmail] = useState('admin@empresa.com');
+  const [adminEmail] = useState('admin@empresa.com');
+  const [stats, setStats] = useState({
+    total: 0,
+    completed: 0,
+    inProgress: 0,
+    notStarted: 0
+  });
 
   useEffect(() => {
-    // Verificar autenticação
     const isAuthenticated = sessionStorage.getItem('adminAuth') === 'true';
     
     if (!isAuthenticated) {
@@ -19,21 +24,33 @@ function ManagerDashboard() {
       return;
     }
 
-    const loadDashboard = async () => {
-      try {
-        console.log('Carregando dashboard...');
-        const { dashboard } = await api.getManagerDashboard(adminEmail);
-        console.log('Dashboard carregado:', dashboard);
-        setCollaborators(dashboard);
-      } catch (error) {
-        console.error('Erro ao carregar dashboard:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadDashboard();
-  }, [adminEmail, navigate]);
+  }, [navigate]);
+
+  const loadDashboard = async () => {
+    try {
+      console.log('📊 Carregando dashboard...');
+      const response = await api.getManagerDashboard(adminEmail);
+      
+      if (response.dashboard) {
+        console.log('✅ Dashboard carregado:', response.dashboard);
+        setCollaborators(response.dashboard);
+        
+        // Calcular estatísticas
+        const stats = {
+          total: response.dashboard.length,
+          completed: response.dashboard.filter(c => c.status === 'completed').length,
+          inProgress: response.dashboard.filter(c => c.status === 'in-progress').length,
+          notStarted: response.dashboard.filter(c => c.status === 'not-started').length
+        };
+        setStats(stats);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar dashboard:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCollaboratorClick = (email) => {
     navigate('/manager/collaborator', { state: { email, adminEmail } });
@@ -42,6 +59,25 @@ function ManagerDashboard() {
   const handleLogout = () => {
     sessionStorage.removeItem('adminAuth');
     navigate('/admin');
+  };
+
+  const getStatusBadge = (status) => {
+    const badges = {
+      'completed': { text: 'Completo', color: '#10b981', icon: '✓' },
+      'in-progress': { text: 'Em Progresso', color: '#3b82f6', icon: '⟳' },
+      'not-started': { text: 'Não Iniciado', color: '#6b7280', icon: '○' }
+    };
+    return badges[status] || badges['not-started'];
+  };
+
+  const getNivelColor = (nivel) => {
+    const colors = {
+      'AVANÇADO': '#10b981',
+      'INTERMEDIÁRIO': '#3b82f6',
+      'INICIANTE': '#f59e0b',
+      'N/A': '#6b7280'
+    };
+    return colors[nivel] || colors['N/A'];
   };
 
   if (isLoading) {
@@ -60,71 +96,188 @@ function ManagerDashboard() {
       <Header />
       
       <main className="manager-main">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h1 className="manager-title" style={{ margin: 0 }}>
-            Bem vindo(a) a verificação de resultados da equipe
-          </h1>
+        <div className="dashboard-header">
+          <div>
+            <h1 className="manager-title">
+              Portal do Gestor - Dashboard de Treinamento
+            </h1>
+            <p className="manager-subtitle">
+              Acompanhe o progresso de toda a equipe em tempo real
+            </p>
+          </div>
           <button 
             onClick={handleLogout}
-            style={{
-              background: 'white',
-              color: '#1E2B5F',
-              border: 'none',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: '600',
-              transition: 'all 0.2s'
-            }}
-            onMouseOver={(e) => e.target.style.opacity = '0.9'}
-            onMouseOut={(e) => e.target.style.opacity = '1'}
+            className="logout-button"
           >
             🚪 Sair
           </button>
         </div>
 
-        <div className="dashboard-content">
-          <div className="dashboard-section">
-            <h2 className="section-title">Visão geral</h2>
-            
-            <div className="table-container">
-              <div className="table-header">
-                <div className="table-header-cell collaborator-column">Colaborador</div>
-                <div className="table-header-cell status-column">Status</div>
-              </div>
-
-              <div className="table-body">
-                {collaborators.map((collab) => (
-                  <div 
-                    key={collab.email} 
-                    className="table-row"
-                    onClick={() => handleCollaboratorClick(collab.email)}
-                  >
-                    <div className="table-cell collaborator-cell">
-                      <span className="user-icon">👤</span>
-                      <span className="user-email">{collab.email}</span>
-                    </div>
-                    <div className="table-cell status-cell">
-                      {collab.status === 'completed' ? (
-                        <span className="status-icon completed">✓</span>
-                      ) : (
-                        <div className="progress-bar-small">
-                          <div 
-                            className="progress-fill-small" 
-                            style={{ width: `${collab.progress}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+        {/* Estatísticas Gerais */}
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-icon">👥</div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.total}</div>
+              <div className="stat-label">Total de Usuários</div>
             </div>
           </div>
 
-          <div className="dashboard-section">
-            <h2 className="section-title">Gráfico de nível</h2>
-            <p style={{color: '#666', padding: '1rem'}}>Gráficos em desenvolvimento...</p>
+          <div className="stat-card stat-success">
+            <div className="stat-icon">✓</div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.completed}</div>
+              <div className="stat-label">Completaram</div>
+            </div>
+          </div>
+
+          <div className="stat-card stat-progress">
+            <div className="stat-icon">⟳</div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.inProgress}</div>
+              <div className="stat-label">Em Progresso</div>
+            </div>
+          </div>
+
+          <div className="stat-card stat-pending">
+            <div className="stat-icon">○</div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.notStarted}</div>
+              <div className="stat-label">Não Iniciaram</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabela de Colaboradores */}
+        <div className="dashboard-section">
+          <h2 className="section-title">
+            📋 Colaboradores ({collaborators.length})
+          </h2>
+          
+          <div className="table-wrapper">
+            <table className="collaborators-table">
+              <thead>
+                <tr>
+                  <th>Colaborador</th>
+                  <th>Status</th>
+                  <th>Quiz</th>
+                  <th>Nível</th>
+                  <th>Pontuação</th>
+                  <th>Acertos</th>
+                  <th>Trilha</th>
+                  <th>Último Acesso</th>
+                </tr>
+              </thead>
+              <tbody>
+                {collaborators.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="empty-state">
+                      <div className="empty-icon">📭</div>
+                      <p>Nenhum colaborador cadastrado ainda</p>
+                    </td>
+                  </tr>
+                ) : (
+                  collaborators.map((collab) => {
+                    const statusBadge = getStatusBadge(collab.status);
+                    return (
+                      <tr 
+                        key={collab.email} 
+                        onClick={() => handleCollaboratorClick(collab.email)}
+                        className="table-row-clickable"
+                      >
+                        <td>
+                          <div className="user-cell">
+                            <div className="user-avatar">
+                              {collab.nome ? collab.nome.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div className="user-info">
+                              <div className="user-name">{collab.nome || 'Sem nome'}</div>
+                              <div className="user-email">{collab.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        
+                        <td>
+                          <span 
+                            className="status-badge"
+                            style={{ backgroundColor: statusBadge.color }}
+                          >
+                            {statusBadge.icon} {statusBadge.text}
+                          </span>
+                        </td>
+                        
+                        <td>
+                          {collab.quizCompleted ? (
+                            <span className="quiz-status completed">
+                              ✓ Completo
+                            </span>
+                          ) : (
+                            <span className="quiz-status pending">
+                              ○ Pendente
+                            </span>
+                          )}
+                        </td>
+                        
+                        <td>
+                          <span 
+                            className="nivel-badge"
+                            style={{ 
+                              backgroundColor: getNivelColor(collab.nivelFinal),
+                              color: 'white',
+                              padding: '4px 12px',
+                              borderRadius: '12px',
+                              fontSize: '0.875rem',
+                              fontWeight: '600'
+                            }}
+                          >
+                            {collab.nivelFinal}
+                          </span>
+                        </td>
+                        
+                        <td>
+                          <span className="pontuacao-value">
+                            {collab.pontuacaoFinal} pts
+                          </span>
+                        </td>
+                        
+                        <td>
+                          {collab.quizCompleted ? (
+                            <span className="acertos-info">
+                              {collab.acertos}/{collab.totalPerguntas}
+                              <span className="percentual">
+                                ({Math.round((collab.acertos / collab.totalPerguntas) * 100)}%)
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="na-text">-</span>
+                          )}
+                        </td>
+                        
+                        <td>
+                          <div className="progress-cell">
+                            <div className="mini-progress-bar">
+                              <div 
+                                className="mini-progress-fill"
+                                style={{ width: `${collab.progress}%` }}
+                              />
+                            </div>
+                            <span className="progress-text">{collab.progress}%</span>
+                          </div>
+                        </td>
+                        
+                        <td>
+                          <span className="last-access">
+                            {collab.lastAccess 
+                              ? new Date(collab.lastAccess).toLocaleDateString('pt-BR')
+                              : 'Nunca'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </main>

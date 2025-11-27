@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
@@ -64,6 +64,10 @@ function Trail() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  // Ref para evitar múltiplos toasts
+  const lastToastTime = useRef(0);
+  const saveTimeout = useRef(null);
+
   useEffect(() => {
     const stateEmail = location.state?.email;
     
@@ -86,7 +90,6 @@ function Trail() {
         setCompletedLessons(progress.completedLessons || []);
         if (progress.notes) setNotes(progress.notes);
         
-        // Restaurar aula atual se existir
         if (progress.currentLesson) {
           const lesson = findLessonById(progress.currentLesson);
           if (lesson) {
@@ -113,6 +116,12 @@ function Trail() {
     if (!email || isSaving) return;
 
     setIsSaving(true);
+    
+    // Limpar timeout anterior
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
+    }
+
     try {
       console.log('💾 Salvando progresso...', {
         completedLessons: completed,
@@ -127,10 +136,21 @@ function Trail() {
       });
 
       console.log('✅ Progresso salvo com sucesso!');
-      toast.success('Progresso salvo!');
+      
+      // Mostrar toast apenas se passou mais de 3 segundos do último
+      const now = Date.now();
+      if (now - lastToastTime.current > 3000) {
+        toast.success('Progresso salvo!');
+        lastToastTime.current = now;
+      }
     } catch (error) {
       console.error('❌ Erro ao salvar progresso:', error);
-      toast.error('Erro ao salvar progresso');
+      // Mostrar erro apenas se passou mais de 3 segundos
+      const now = Date.now();
+      if (now - lastToastTime.current > 3000) {
+        toast.error('Erro ao salvar progresso');
+        lastToastTime.current = now;
+      }
     } finally {
       setIsSaving(false);
     }
@@ -146,8 +166,13 @@ function Trail() {
 
   const selectLesson = (lesson) => {
     setCurrentLesson(lesson);
-    // Salvar automaticamente ao trocar de aula
-    saveProgress(completedLessons, notes);
+    // Salvar automaticamente ao trocar de aula (com debounce)
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
+    }
+    saveTimeout.current = setTimeout(() => {
+      saveProgress(completedLessons, notes);
+    }, 1000);
   };
 
   const markAsCompleted = async () => {
@@ -155,7 +180,14 @@ function Trail() {
       const updated = [...completedLessons, currentLesson.id];
       setCompletedLessons(updated);
       await saveProgress(updated, notes);
-      toast.success('Aula concluída! 🎉');
+      
+      // Verificar se completou toda a trilha
+      const totalLessons = modulesData.reduce((acc, mod) => acc + mod.lessons.length, 0);
+      if (updated.length === totalLessons) {
+        toast.success('🎉 Parabéns! Você completou toda a trilha!');
+      } else {
+        toast.success('Aula concluída! 🎉');
+      }
     } else {
       toast.info('Esta aula já foi concluída');
     }
@@ -167,7 +199,14 @@ function Trail() {
   };
 
   const handleNotesSave = () => {
-    saveProgress(completedLessons, notes);
+    // Limpar timeout anterior
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
+    }
+    // Salvar com debounce
+    saveTimeout.current = setTimeout(() => {
+      saveProgress(completedLessons, notes);
+    }, 500);
   };
 
   const totalLessons = modulesData.reduce((acc, mod) => acc + mod.lessons.length, 0);

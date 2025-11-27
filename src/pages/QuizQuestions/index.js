@@ -88,10 +88,11 @@ function QuizQuestions() {
     setSelectedAnswer(alternativaId);
   };
 
-    const handleShowHint = () => {
+  const handleShowHint = () => {
     setShowHint(true);
     setUsedHint(true);
-    console.log('💡 Dica utilizada - pontos serão reduzidos em 50%');
+    // Removido: log informando sobre redução de pontos
+    console.log('💡 Dica visualizada');
   };
 
   const handleSubmitAnswer = async () => {
@@ -102,7 +103,7 @@ function QuizQuestions() {
     try {
       console.log('📤 Enviando resposta...');
       
-            const response = await api.submitAnswer(
+      const response = await api.submitAnswer(
         email,
         currentQuestion.id,
         selectedAnswer,
@@ -111,9 +112,7 @@ function QuizQuestions() {
 
       console.log('✅ Resposta processada');
 
-      if (usedHint) {
-        toast.info('💡 Dica usada: pontos reduzidos em 50%');
-      }
+      // REMOVIDO: Notificação sobre uso de dica
 
       if (response.finalizado) {
         console.log('🏁 Quiz finalizado após resposta');
@@ -144,8 +143,7 @@ function QuizQuestions() {
           total: relatorio.totalPerguntas,
           nivel: relatorio.nivelFinal,
           pontuacao: relatorio.pontuacaoFinal,
-          percentual: relatorio.percentualConclusao,
-          dicasUsadas: relatorio.dicasUsadas
+          percentual: relatorio.percentualConclusao
         },
         replace: true
       });
@@ -213,15 +211,11 @@ function QuizQuestions() {
               >
                 <span className="hint-icon">💡</span>
                 {usedHint ? 'Dica Usada' : 'Dica'}  
-                </button>
+              </button>
             )}
           </div>
 
-          {usedHint && (
-            <div className="hint-warning">
-              ⚠️ Você usou a dica - seus pontos para esta questão serão reduzidos em 50%
-            </div>
-          )}
+          {/* REMOVIDO: Aviso de penalidade de pontos */}
 
           <p className="question-text">{currentQuestion.texto}</p>
 

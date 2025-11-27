@@ -28,10 +28,14 @@ function ManagerDashboard() {
 
   const loadDashboard = async () => {
     try {
+      console.log('📊 [ManagerDashboard] Carregando dashboard...');
       const response = await api.getManagerDashboard(adminEmail);
+      
       if (response.dashboard) {
+        console.log('✅ [ManagerDashboard] Dashboard carregado:', response.dashboard.length, 'usuários');
         setCollaborators(response.dashboard);
         setStatistics(response.statistics);
+        
         const stats = {
           total: response.dashboard.length,
           completed: response.dashboard.filter(c => c.status === 'completed').length,
@@ -41,14 +45,23 @@ function ManagerDashboard() {
         setStats(stats);
       }
     } catch (error) {
-      console.error(error);
+      console.error('❌ [ManagerDashboard] Erro ao carregar dashboard:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCollaboratorClick = (email) => {
-    navigate('/manager/collaborator', { state: { email, adminEmail } });
+    console.log('👤 [ManagerDashboard] Clicando no colaborador:', email);
+    console.log('📧 [ManagerDashboard] Admin email:', adminEmail);
+    
+    // Navegar para a página de detalhes com state
+    navigate('/manager/collaborator', { 
+      state: { 
+        email: email,
+        adminEmail: adminEmail 
+      } 
+    });
   };
 
   const handleLogout = () => {
@@ -224,6 +237,7 @@ function ManagerDashboard() {
                         key={collab.email}
                         onClick={() => handleCollaboratorClick(collab.email)}
                         className="table-row-clickable"
+                        style={{ cursor: 'pointer' }}
                       >
                         <td>
                           <div className="user-cell">

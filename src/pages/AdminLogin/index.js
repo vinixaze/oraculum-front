@@ -5,7 +5,7 @@ import Button from '../../components/Button';
 import { useToast } from '../../components/Toast';
 import './AdminLogin.css';
 
-const ADMIN_PASSWORD = 'admin123'; // Senha padrão (pode ser alterada)
+const ADMIN_PASSWORD = 'admin123'; // Senha padrão
 
 function AdminLogin() {
   const [password, setPassword] = useState('');

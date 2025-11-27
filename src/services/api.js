@@ -55,14 +55,14 @@ class ApiService {
     return this.request(`/quiz/next-question/${email}`);
   }
 
-  async submitAnswer(email, perguntaId, alternativaEscolhidaId) {
+async submitAnswer(email, perguntaId, alternativaEscolhidaId, usouDica = false) {
     return this.request('/quiz/answer', {
       method: 'POST',
       body: JSON.stringify({ 
         email, 
         perguntaId, 
         alternativaEscolhidaId,
-        usouDIca
+        usouDica
       }),
     });
   }

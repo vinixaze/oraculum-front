@@ -8,15 +8,25 @@ import './CollaboratorDetail.css';
 function CollaboratorDetail() {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Debug: verificar o que está vindo no state
+  console.log('🔍 [CollaboratorDetail] location.state:', location.state);
+  
   const email = location.state?.email;
   const adminEmail = location.state?.adminEmail;
 
+  console.log('📧 [CollaboratorDetail] Email recebido:', email);
+  console.log('👨‍💼 [CollaboratorDetail] Admin email:', adminEmail);
+
   const [collaborator, setCollaborator] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!email) {
-      navigate('/manager/dashboard');
+      console.log('❌ [CollaboratorDetail] Email não encontrado no state');
+      setError('Email do colaborador não foi fornecido');
+      setIsLoading(false);
       return;
     }
 
@@ -25,15 +35,24 @@ function CollaboratorDetail() {
 
   const loadCollaboratorDetails = async () => {
     try {
-      console.log('📥 Carregando detalhes do colaborador:', email);
+      setIsLoading(true);
+      setError(null);
+      
+      console.log('📥 [CollaboratorDetail] Carregando detalhes do colaborador:', email);
       const response = await api.getCollaboratorDetail(email, adminEmail);
       
+      console.log('📊 [CollaboratorDetail] Resposta da API:', response);
+      
       if (response.collaborator) {
-        console.log('✅ Detalhes carregados:', response.collaborator);
+        console.log('✅ [CollaboratorDetail] Detalhes carregados:', response.collaborator);
         setCollaborator(response.collaborator);
+      } else {
+        console.log('⚠️ [CollaboratorDetail] Nenhum colaborador retornado');
+        setError('Colaborador não encontrado');
       }
     } catch (error) {
-      console.error('❌ Erro ao carregar detalhes:', error);
+      console.error('❌ [CollaboratorDetail] Erro ao carregar detalhes:', error);
+      setError(error.message || 'Erro ao carregar detalhes do colaborador');
     } finally {
       setIsLoading(false);
     }
@@ -64,15 +83,26 @@ function CollaboratorDetail() {
     );
   }
 
-  if (!collaborator) {
+  if (error || !collaborator) {
     return (
       <div className="collaborator-detail-page">
         <Header />
         <main className="collaborator-main">
-          <h1 className="loading-text">Colaborador não encontrado</h1>
-          <Button variant="yellow" onClick={handleBack}>
-            Voltar
-          </Button>
+          <div style={{ textAlign: 'center', color: 'white' }}>
+            <h1 className="loading-text">
+              {error || 'Colaborador não encontrado'}
+            </h1>
+            <p style={{ color: 'rgba(255,255,255,0.7)', marginTop: '1rem' }}>
+              Email buscado: {email || 'não informado'}
+            </p>
+            <Button 
+              variant="yellow" 
+              onClick={handleBack}
+              style={{ marginTop: '2rem' }}
+            >
+              Voltar ao Dashboard
+            </Button>
+          </div>
         </main>
       </div>
     );

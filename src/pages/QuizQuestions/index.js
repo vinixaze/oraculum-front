@@ -84,19 +84,44 @@ function QuizQuestions() {
     }
   };
 
-  const handleSelectAnswer = (alternativaId) => {
-    setSelectedAnswer(alternativaId);
+  // ✅ FUNÇÃO PROTEGIDA
+  const handleSelectAnswer = (alternativaId, event) => {
+    try {
+      // Proteção contra eventos corrompidos
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      // Validação adicional
+      if (isSubmitting) {
+        console.warn('⚠️ Quiz está sendo enviado, aguarde...');
+        return;
+      }
+      
+      setSelectedAnswer(alternativaId);
+      console.log('✅ Alternativa selecionada:', alternativaId);
+    } catch (error) {
+      console.error('❌ Erro ao selecionar alternativa:', error);
+      toast.error('Erro ao selecionar resposta. Por favor, recarregue a página.');
+    }
   };
 
   const handleShowHint = () => {
     setShowHint(true);
     setUsedHint(true);
-    // Removido: log informando sobre redução de pontos
     console.log('💡 Dica visualizada');
   };
 
+  // ✅ FUNÇÃO PROTEGIDA
   const handleSubmitAnswer = async () => {
-    if (selectedAnswer === null || isSubmitting) return;
+    // Proteção contra múltiplos cliques
+    if (selectedAnswer === null || isSubmitting) {
+      if (selectedAnswer === null) {
+        toast.error('Por favor, selecione uma alternativa');
+      }
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -111,8 +136,6 @@ function QuizQuestions() {
       );
 
       console.log('✅ Resposta processada');
-
-      // REMOVIDO: Notificação sobre uso de dica
 
       if (response.finalizado) {
         console.log('🏁 Quiz finalizado após resposta');
@@ -204,9 +227,9 @@ function QuizQuestions() {
             
             {currentQuestion.dica && (
               <button
+                type="button"
                 className={`hint-button-header ${usedHint ? 'hint-used' : ''}`}
                 onClick={handleShowHint}
-                type="button"
                 disabled={usedHint}
               >
                 <span className="hint-icon">💡</span>
@@ -215,17 +238,18 @@ function QuizQuestions() {
             )}
           </div>
 
-          {/* REMOVIDO: Aviso de penalidade de pontos */}
-
           <p className="question-text">{currentQuestion.texto}</p>
 
           <div className="options-list">
             {currentQuestion.alternativas && currentQuestion.alternativas.map((alternativa) => (
               <button
                 key={alternativa.id}
+                type="button"
                 className={`option-item ${selectedAnswer === alternativa.id ? 'selected' : ''}`}
-                onClick={() => handleSelectAnswer(alternativa.id)}
+                onClick={(e) => handleSelectAnswer(alternativa.id, e)}
                 disabled={isSubmitting}
+                aria-pressed={selectedAnswer === alternativa.id}
+                aria-label={`Selecionar alternativa ${alternativa.letra}`}
               >
                 <span className="option-radio"></span>
                 <span className="option-text">

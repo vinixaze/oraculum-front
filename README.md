@@ -1,86 +1,77 @@
-Oraculum — Frontend
+# Oraculum — Frontend
 
-Este repositório contém o frontend do projeto Oraculum, desenvolvido em React, como parte da disciplina de Residência Tecnológica do curso de Análise e Desenvolvimento de Sistemas, em parceria com o Banco do Brasil.
+Este repositório contém o frontend da aplicação Oraculum, desenvolvido em React, como parte da Residência Tecnológica do curso de Análise e Desenvolvimento de Sistemas em parceria com o Banco do Brasil.
 
-Sobre o Projeto
+## Sobre o Projeto
 
-O Oraculum é uma aplicação web voltada ao aprendizado e conscientização sobre cibersegurança.
-O usuário pode se cadastrar com seu e-mail, assistir a um resumo introdutório com vídeo educativo e realizar um quiz que avalia seu nível de conhecimento.
-Com base no resultado, a aplicação apresenta uma trilha de aprendizado personalizada, composta por módulos, videoaulas e conteúdos complementares.
+O Oraculum é uma aplicação web voltada ao aprendizado e conscientização sobre cibersegurança. O usuário pode se cadastrar, assistir a um vídeo educativo, realizar um quiz de avaliação e receber uma trilha de aprendizado personalizada com base no resultado obtido.
 
-Funcionalidades
+## Funcionalidades
 
-Cadastro de usuário com e-mail
+- Cadastro de usuário utilizando e-mail
+- Exibição de resumo e vídeo introdutório sobre cibersegurança
+- Quiz com avaliação de nível de conhecimento
+- Trilha de aprendizado personalizada
+- Interface moderna e responsiva
+- Integração com o backend hospedado no Railway
 
-Exibição de resumo e vídeo introdutório sobre cibersegurança
+## Tecnologias Utilizadas
 
-Quiz para avaliação do nível de conhecimento
+- React 
+- React DOM
+- React Router DOM 
+- React Scripts 
+- Testing Library (React, DOM, Jest, User Event)
+- Web Vitals
 
-Liberação de trilha de aprendizado conforme o resultado do quiz
+## Como Executar o Projeto
 
-Interface responsiva e fácil de navegar
+### Pré-requisitos
+- Node.js 18+
+- npm ou yarn
 
-Tecnologias Utilizadas
+### Passos
 
-O projeto foi desenvolvido utilizando o Create React App com as seguintes dependências principais:
-
-Tecnologia	Descrição
-React 19	Biblioteca principal para construção da interface
-React DOM	Renderização dos componentes React no navegador
-React Router DOM 7	Gerenciamento de rotas e navegação
-React Scripts 5	Ferramentas de build, testes e execução do Create React App
-Testing Library (React, DOM, Jest, User Event)	Ferramentas para testes de componentes
-Web Vitals	Métricas de performance da aplicação
-Como Executar o Projeto
-Pré-requisitos
-
-Node.js 18+
-
-npm (ou yarn)
-
-Passos para execução
-# Clonar o repositório
+Clonar o repositório:
 git clone https://github.com/seu-usuario/oraculum-frontend.git
 
-# Entrar na pasta do projeto
+Acessar a pasta:
 cd oraculum-frontend
 
-# Instalar as dependências
+Instalar dependências:
 npm install
-# ou
+
+ou
 yarn install
 
-# Executar o projeto
+
+Executar o projeto:
 npm start
-# ou
+
+ou
 yarn start
 
 
-Após a inicialização, o projeto estará disponível em:
+Aplicação disponível em:
 http://localhost:3000/
 
-Estrutura do Projeto
-
-A estrutura atual do projeto é a seguinte:
+## Estrutura do Projeto
 
 oraculum-frontend/
-├── assets/         # Imagens, ícones e outros arquivos estáticos
-├── components/     # Componentes reutilizáveis
-├── data/           # Dados e configurações locais
-├── pages/          # Páginas principais da aplicação
-├── App.js          # Componente raiz
-├── index.css       # Estilos globais
-└── index.js        # Ponto de entrada da aplicação
+├── assets/
+├── components/
+├── data/
+├── pages/
+├── App.js
+├── index.css
+└── index.js
 
-Boas Práticas e Padrões
+## Boas Práticas
 
-Código padronizado conforme as regras do ESLint do Create React App
-
-Componentes nomeados em PascalCase
-
-Separação clara entre lógica, layout e estilo
-
-Utilização de hooks para gerenciamento de estado e efeitos
-
-Estrutura modular e de fácil manutenção
-
+- Componentes em PascalCase
+- Separação de lógica, layout e estilo
+- Hooks para gerenciamento de estado
+- Estrutura modular e organizada
+- Separação de lógica, layout e estilo
+- Hooks para gerenciamento de estado
+- Estrutura modular e organizada
